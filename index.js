@@ -1,6 +1,7 @@
 import https from "https";
 import cheerio from "cheerio";
-
+import PDFDocument from "pdfkit";
+import fs from "fs/promises";
 async function scrapeWebsite() {
   try {
     const url1 = "https://www.bdh-online.de/patienten/therapeutensuche/";
@@ -11,7 +12,8 @@ async function scrapeWebsite() {
     const detailsCont = "#therapeuten .col-md-8";
     const page1 = await getUserDetailsByPage(url1, table, detailsCont);
     const page2 = await getUserDetailsByPage(url2, table, detailsCont);
-    console.log({ page1, page2 });
+
+    await createPDF([page1, page2]);
   } catch (error) {
     console.error("Error:", error.message);
   }
@@ -56,8 +58,8 @@ async function getUserDetails(html, container) {
     .split(" ");
   const addressLines = detailsContainer
     .contents()
-    .filter((index, element) => element.nodeType === 3)
-    .map((index, element) => $(element).text().trim())
+    .filter((_, element) => element.nodeType === 3)
+    .map((_, element) => $(element).text().trim())
     .get();
   const city = addressLines[2].match(/\s(.+)/)[0].trim();
   const zip = addressLines[2].match(/\d+/)[0];
@@ -81,5 +83,46 @@ function httpRequest(url) {
       });
   });
 }
+async function createPDF(dataArr) {
+  const doc = new PDFDocument();
+  function cleanText(text) {
+    return text.replace(/\t/g, "").trim();
+  }
 
+  doc.font("Helvetica").fontSize(9);
+  let y = 50;
+
+  doc.text("Name", 10, y);
+  doc.text("Surname", 60, y);
+  doc.text("Zip", 150, y);
+  doc.text("City", 190, y);
+  doc.text("Email", 350, y);
+
+  y += 15;
+  dataArr.forEach((data) => {
+    data.forEach((row) => {
+      if (row.surname === "" || !row.surname) {
+        row.surname = "random";
+      }
+
+      doc.text(cleanText(row.name), 10, y, { wordSpacing: 0 });
+      doc.text(cleanText(row.surname), 60, y, { wordSpacing: 0 });
+      doc.text(cleanText(row.zip), 150, y, { wordSpacing: 0 });
+      doc.text(cleanText(row.city), 190, y, { wordSpacing: 0 });
+      doc.text(row.email, 350, y);
+
+      y += 15;
+    });
+  });
+
+  const buffer = await new Promise((resolve) => {
+    const chunks = [];
+    doc.on("data", (chunk) => chunks.push(chunk));
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.end();
+  });
+
+  await fs.writeFile("output.pdf", buffer, "utf-8");
+  console.log("PDF created successfully.");
+}
 scrapeWebsite();

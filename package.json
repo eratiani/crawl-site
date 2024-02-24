@@ -19,6 +19,7 @@
   "homepage": "https://github.com/eratiani/crawl-site#readme",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
-    "openai": "^4.28.0"
+    "openai": "^4.28.0",
+    "pdfkit": "^0.14.0"
   }
 }
