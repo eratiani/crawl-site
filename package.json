@@ -2,9 +2,11 @@
   "name": "crawl",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/eratiani/crawl-site/issues"
   },
-  "homepage": "https://github.com/eratiani/crawl-site#readme"
+  "homepage": "https://github.com/eratiani/crawl-site#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "openai": "^4.28.0",
+    "pdfkit": "^0.14.0"
+  }
 }
