@@ -1,7 +1,8 @@
 import https from "https";
 const API_KEY =
-  "995ba3caf3b86a038e8c0a4549f05c0e568912b27231701285a57621a9ea2024";
-// "24c13a584d287f222388be5fcfbb4a4978df9cb084646e180009ac5347f3bd4c";
+  "24c13a584d287f222388be5fcfbb4a4978df9cb084646e180009ac5347f3bd4c";
+// "c14711d2ce1793547c92f9e2cab3d3e79b77611b040a86ca0e7d2282d517250a";
+// "995ba3caf3b86a038e8c0a4549f05c0e568912b27231701285a57621a9ea2024";
 export async function getGenderFromGenderizeAPI(nameToCheck) {
   return new Promise((resolve, reject) => {
     const API_KEY_GENDERIZE = `https://api.genderize.io?name=${nameToCheck}`;
