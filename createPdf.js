@@ -1,35 +1,29 @@
 import PDFDocument from "pdfkit";
 import fs from "fs/promises";
-
+import path from "path";
 export async function createPDF(dataArr) {
   try {
     const doc = new PDFDocument();
     function cleanText(text) {
       return text.replace(/\t/g, "").trim();
     }
-
-    doc.font("Helvetica").fontSize(9);
+    const fontPath = path.join(path.dirname("sylfaen.ttf"), "sylfaen.ttf"); // Adjust the file name if necessary
+    doc.font(fontPath).fontSize(9);
     let y = 50;
+    doc.text("title", 10, y);
+    doc.text("price", 190, y);
+    doc.text("priceOfMSqr", 220, y);
+    doc.text("link", 290, y);
 
-    doc.text("Name", 10, y);
-    doc.text("Surname", 60, y);
-    doc.text("Gender", 150, y);
-    doc.text("Zip", 190, y);
-    doc.text("City", 220, y);
-    doc.text("Email", 360, y);
-
-    y += 15;
+    y += 25;
     dataArr.forEach((data) => {
       data.forEach((row) => {
-        doc.text(cleanText(row.name), 10, y, { wordSpacing: 0 });
-        doc.text(cleanText(row.surname), 60, y, { wordSpacing: 0 });
-        doc.text(cleanText(row.gender[0].toUpperCase()), 150, y, {
-          wordSpacing: 0,
-        });
-        doc.text(cleanText(row.zip), 190, y, { wordSpacing: 0 });
-        doc.text(cleanText(row.city), 220, y, { wordSpacing: 0 });
-        doc.text(row.email, 360, y);
-        y += 15;
+        doc.text(cleanText(row.title), 10, y, { wordSpacing: 0 });
+
+        doc.text(cleanText(row.price), 190, y, { wordSpacing: 0 });
+        doc.text(cleanText(row.priceOfMSqr), 220, y, { wordSpacing: 0 });
+        doc.text(row.hrefValue, 290, y);
+        y += 25;
       });
     });
 
